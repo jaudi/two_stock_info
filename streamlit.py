@@ -3,11 +3,11 @@
 
 
 
-
+import appdirs as ad
 import streamlit as st
 import yfinance as yf
 import pandas as pd
-
+ad.user_cache_dir =lamda *args: "/tmp"
 st.title("Stock analysis tool")
 
 st.sidebar.header("Choose two stocks")
