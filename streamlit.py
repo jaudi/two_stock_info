@@ -54,9 +54,9 @@ payoutratio2=yf.Ticker(stock2).info.get('payoutRatio',"no information in yahoo f
 st.sidebar.write('Payout ratio', stock2, payoutratio2)
 
 earningsQuarterlyGrowth1=yf.Ticker(stock1).info.get('earningsQuarterlyGrowth',"no information in yahoo finance")
-st.sidebar.write('Earning Quearterly Growth', stock1, earningsQuarterlyGrowth1)
+st.sidebar.write('Earning Quarterly Growth', stock1, earningsQuarterlyGrowth1)
 earningsQuarterlyGrowth2=yf.Ticker(stock2).info.get('earningsQuarterlyGrowth',"no information in yahoo finance")
-st.sidebar.write('Earning Quearterly Growth', stock2, earningsQuarterlyGrowth2)
+st.sidebar.write('Earning Quarterly Growth', stock2, earningsQuarterlyGrowth2)
 
 st.sidebar.header("Prices")
 st.sidebar.write("Last price in yahoo finance for", stock1, data1['Adj Close'][-1])
