@@ -16,7 +16,7 @@ stock1 = st.sidebar.text_input("Enter stock ticker symbol-1 eg AAPL", value="AAP
 stock2 = st.sidebar.text_input("Enter stock ticker symbol-2 eg MSFT", value="MSFT")
 
 def load_data(stock):
-    return yf.download(stock, period="3y")
+    return yf.download(stock, period="1y")
 
 data1 = load_data(stock1)
 data2 = load_data(stock2)
