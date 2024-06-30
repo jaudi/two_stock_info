@@ -15,7 +15,7 @@ st.sidebar.header("Choose two stocks")
 stock1 = st.sidebar.text_input("Enter stock ticker symbol-1 (e.g., AAPL)", value="AAPL")
 stock2 = st.sidebar.text_input("Enter stock ticker symbol-2 (e.g., MSFT)", value="MSFT")
 
-def load_data(stock, period="1y"):
+def load_data(stock, period="5y"):
     return yf.download(stock, period=period)
 
 # Load data for the selected stocks
