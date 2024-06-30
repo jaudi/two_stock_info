@@ -94,12 +94,13 @@ for share in shares:
     
     # Calculate cumulative return
     data_selected['cumulative_return'] = (1 + data_selected['daily_return']).cumprod() - 1
+    data_selected['cumulative_return'] = data_selected['cumulative_return'] * 100
     
     # Fill NaN values
     data_selected = data_selected.fillna(0)
     
     # Plot the cumulative return using Streamlit
-    st.subheader(f"Cumulative Return of {share}")
+    st.subheader(f"Cumulative Return of {share} (%)")
     st.line_chart(data_selected['cumulative_return'], use_container_width=True)
 
     # Calculate the mean of 'Close' prices
@@ -117,3 +118,8 @@ for share in shares:
     # Plot the bar chart for categories using Streamlit
     st.subheader(f"Days Above/Below Mean for {share}")
     st.bar_chart(data['Category'].value_counts(), use_container_width=True)
+    # Add a disclaimer
+st.write("""
+# Disclaimer
+The information presented in this tool is sourced from Yahoo Finance. The data is for informational purposes only and should not be considered as financial advice.
+""")
