@@ -4,30 +4,19 @@
 
 
 
-import pandas as pd
-import yfinance as yf
-
-
-
-
 import streamlit as st
 import yfinance as yf
 import pandas as pd
 
-# Set the title of the Streamlit app
 st.title("Stock Analysis Tool")
 
-# Sidebar header for stock selection
 st.sidebar.header("Choose two stocks")
 
-# Input fields for stock tickers
 stock1 = st.sidebar.text_input("Enter stock ticker symbol-1 (e.g., AAPL)", value="AAPL")
 stock2 = st.sidebar.text_input("Enter stock ticker symbol-2 (e.g., MSFT)", value="MSFT")
-# List of stock symbols
-shares = [stock1, stock2]
-# Function to load stock data
-def load_data(stock):
-    return yf.download(stock, period="1y")
+
+def load_data(stock, period="1y"):
+    return yf.download(stock, period=period)
 
 # Load data for the selected stocks
 data1 = load_data(stock1)
@@ -53,7 +42,6 @@ else:
     correlation = data1['Adj Close'].corr(data2['Adj Close'])
     st.write(f"Correlation between {stock1} and {stock2}: {correlation:.2f}")
 
-# Sidebar headers for additional information
 st.sidebar.header("Ratios")
 
 # Function to retrieve stock info from Yahoo Finance
@@ -88,4 +76,44 @@ st.sidebar.header("Prices")
 st.sidebar.write(f"Last price in Yahoo Finance for {stock1}: {data1['Adj Close'][-1]:.2f}")
 st.sidebar.write(f"Last price in Yahoo Finance for {stock2}: {data2['Adj Close'][-1]:.2f}")
 
+# New section for additional stock analysis over 5 years
+st.header("Additional Stock Analysis (5 Years)")
 
+# List of stock symbols
+shares = [stock1, stock2]
+
+for share in shares:
+    data = load_data(share, period="5y")
+    data = pd.DataFrame(data)
+
+    # Calculate daily return
+    data['daily_return'] = data['Close'].pct_change()
+    
+    # Select the Close and daily_return columns
+    data_selected = data[['Close', 'daily_return']].copy()  # Create a copy to avoid the SettingWithCopyWarning
+    
+    # Calculate cumulative return
+    data_selected['cumulative_return'] = (1 + data_selected['daily_return']).cumprod() - 1
+    
+    # Fill NaN values
+    data_selected = data_selected.fillna(0)
+    
+    # Plot the cumulative return using Streamlit
+    st.subheader(f"Cumulative Return of {share}")
+    st.line_chart(data_selected['cumulative_return'], use_container_width=True)
+
+    # Calculate the mean of 'Close' prices
+    datamean = data['Close'].mean()
+    
+    # Function to categorize prices
+    def categorize(price):
+        if price > datamean:
+            return "Over Mean"
+        else:
+            return "Under Mean"
+    
+    data['Category'] = data['Close'].apply(categorize)
+    
+    # Plot the bar chart for categories using Streamlit
+    st.subheader(f"Days Above/Below Mean for {share}")
+    st.bar_chart(data['Category'].value_counts(), use_container_width=True)
