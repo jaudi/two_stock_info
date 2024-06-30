@@ -4,24 +4,36 @@
 
 
 
+import pandas as pd
+import yfinance as yf
+import matplotlib.pyplot as plt
+
+# List of stock symbols
+shares = ["BABA", "GSK"]
+
 import streamlit as st
 import yfinance as yf
 import pandas as pd
 
-st.title("Stock analysis tool")
+# Set the title of the Streamlit app
+st.title("Stock Analysis Tool")
 
+# Sidebar header for stock selection
 st.sidebar.header("Choose two stocks")
 
-stock1 = st.sidebar.text_input("Enter stock ticker symbol-1 eg AAPL", value="AAPL")
-stock2 = st.sidebar.text_input("Enter stock ticker symbol-2 eg MSFT", value="MSFT")
+# Input fields for stock tickers
+stock1 = st.sidebar.text_input("Enter stock ticker symbol-1 (e.g., AAPL)", value="AAPL")
+stock2 = st.sidebar.text_input("Enter stock ticker symbol-2 (e.g., MSFT)", value="MSFT")
 
+# Function to load stock data
 def load_data(stock):
     return yf.download(stock, period="1y")
 
+# Load data for the selected stocks
 data1 = load_data(stock1)
 data2 = load_data(stock2)
 
-# Check for missing data in both data1 and data2
+# Check for missing data in both datasets
 if data1.empty or data2.empty:
     st.error("No data available for the selected stocks.")
 else:
@@ -37,27 +49,43 @@ else:
     st.subheader(f"Stock: {stock2}")
     st.line_chart(data2['Adj Close'], use_container_width=True)
     
-correlation = data1['Adj Close'].corr(data2['Adj Close'])
-st.write(f"Correlation between {stock1} and {stock2}: {correlation}")
+    # Calculate and display the correlation between the two stocks
+    correlation = data1['Adj Close'].corr(data2['Adj Close'])
+    st.write(f"Correlation between {stock1} and {stock2}: {correlation:.2f}")
 
-
+# Sidebar headers for additional information
 st.sidebar.header("Ratios")
-pe_ratio1=yf.Ticker(stock1).info.get('forwardPE',"no information in yahoo finance")
-st.sidebar.write('PE ratio', stock1, pe_ratio1)
 
-pe_ratio2=yf.Ticker(stock2).info.get('forwardPE', "no information in yahoo finance")
-st.sidebar.write('PE ratio', stock2, pe_ratio2)
+# Function to retrieve stock info from Yahoo Finance
+def get_stock_info(stock, info):
+    return yf.Ticker(stock).info.get(info, "No information available in Yahoo Finance")
 
-payoutratio1=yf.Ticker(stock1).info.get('payoutRatio',"no information in yahoo finance")
-st.sidebar.write('Payout ratio', stock1, payoutratio1)
-payoutratio2=yf.Ticker(stock2).info.get('payoutRatio',"no information in yahoo finance")
-st.sidebar.write('Payout ratio', stock2, payoutratio2)
+# Display PE ratio
+pe_ratio1 = get_stock_info(stock1, 'forwardPE')
+st.sidebar.write('PE Ratio', stock1, pe_ratio1)
 
-earningsQuarterlyGrowth1=yf.Ticker(stock1).info.get('earningsQuarterlyGrowth',"no information in yahoo finance")
-st.sidebar.write('Earning Quarterly Growth', stock1, earningsQuarterlyGrowth1)
-earningsQuarterlyGrowth2=yf.Ticker(stock2).info.get('earningsQuarterlyGrowth',"no information in yahoo finance")
-st.sidebar.write('Earning Quarterly Growth', stock2, earningsQuarterlyGrowth2)
+pe_ratio2 = get_stock_info(stock2, 'forwardPE')
+st.sidebar.write('PE Ratio', stock2, pe_ratio2)
 
+# Display payout ratio
+payout_ratio1 = get_stock_info(stock1, 'payoutRatio')
+st.sidebar.write('Payout Ratio', stock1, payout_ratio1)
+
+payout_ratio2 = get_stock_info(stock2, 'payoutRatio')
+st.sidebar.write('Payout Ratio', stock2, payout_ratio2)
+
+# Display earnings quarterly growth
+earnings_growth1 = get_stock_info(stock1, 'earningsQuarterlyGrowth')
+st.sidebar.write('Earnings Quarterly Growth', stock1, earnings_growth1)
+
+earnings_growth2 = get_stock_info(stock2, 'earningsQuarterlyGrowth')
+st.sidebar.write('Earnings Quarterly Growth', stock2, earnings_growth2)
+
+# Sidebar header for prices
 st.sidebar.header("Prices")
-st.sidebar.write("Last price in yahoo finance for", stock1, data1['Adj Close'][-1])
-st.sidebar.write("Last price in yahoo finance for", stock2, data2['Adj Close'][-1])
+
+# Display the last price from the 'Adj Close' column
+st.sidebar.write(f"Last price in Yahoo Finance for {stock1}: {data1['Adj Close'][-1]:.2f}")
+st.sidebar.write(f"Last price in Yahoo Finance for {stock2}: {data2['Adj Close'][-1]:.2f}")
+
+
