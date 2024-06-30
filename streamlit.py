@@ -8,7 +8,7 @@ import streamlit as st
 import yfinance as yf
 import pandas as pd
 
-st.title("Stock Analysis Tool")
+st.title("Stock Analysis Tool 5 years period")
 
 st.sidebar.header("Choose two stocks")
 
