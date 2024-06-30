@@ -6,10 +6,9 @@
 
 import pandas as pd
 import yfinance as yf
-import matplotlib.pyplot as plt
 
-# List of stock symbols
-shares = ["BABA", "GSK"]
+
+
 
 import streamlit as st
 import yfinance as yf
@@ -24,7 +23,8 @@ st.sidebar.header("Choose two stocks")
 # Input fields for stock tickers
 stock1 = st.sidebar.text_input("Enter stock ticker symbol-1 (e.g., AAPL)", value="AAPL")
 stock2 = st.sidebar.text_input("Enter stock ticker symbol-2 (e.g., MSFT)", value="MSFT")
-
+# List of stock symbols
+shares = [stock1, stock2]
 # Function to load stock data
 def load_data(stock):
     return yf.download(stock, period="1y")
